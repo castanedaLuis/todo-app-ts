@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Todos } from "./Components/Todos"
+import { TodoId,Todo } from "./Types"
 
 /* eslint-disable react/react-in-jsx-scope */
 const mockoonTodos = [
@@ -23,13 +24,26 @@ const mockoonTodos = [
 function App() {
   const [todos, setTodos] = useState(mockoonTodos)
 
-  const handleRemove = (id:string) =>{
+  const handleRemove = ({id}:TodoId) =>{
     const newTodos = todos.filter(todo => todo.id !== id)
     setTodos(newTodos)
   }
+  
+  const handleComplete = ({id, completed}: Pick<Todo, 'id' | 'completed'>) : void => {
+    const newTodo = todos.map((todo)=>{
+      if(todo.id == id){
+        return {
+          ...todo,
+          completed
+        }
+      }
+      return todo
+    })
+    setTodos(newTodo)
+  }
   return (
     <div className="todoapp">
-      <Todos todos={todos} onRemoveTodo={handleRemove}/>
+      <Todos todos={todos} onRemoveTodo={handleRemove} onToggleComplete={handleComplete}/>
     </div>
 
   )
